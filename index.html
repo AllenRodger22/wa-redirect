@@ -53,23 +53,18 @@
     const $a = document.getElementById('wa-link');
     $a.href = wa;
 
-    // Se estiver testando no Events Manager, permita ?test_event_code=XXXX
-    const params = new URLSearchParams(location.search);
-    const testCode = params.get('test_event_code');
-    if (testCode) {
-      // Meta detecta automaticamente a presença do parâmetro na URL ao disparar eventos
-      // Basta manter o parâmetro na URL durante os fbq('track').
-    }
+    // Se estiver testando no Events Manager, permite ?test_event_code=XXXX na URL
+    // (o Meta detecta automaticamente nos fbq('track'))
 
     function trackAndGo(){
       try {
         if (typeof fbq === 'function') {
-          fbq('track', 'Contact');            // evento padrão recomendado p/ contato
+          fbq('track', 'Contact');            // evento padrão de contato
           fbq('trackCustom', 'ClickWhatsApp'); // evento custom p/ relatórios
         }
       } catch(_) {}
 
-      // Dá ~400ms p/ enviar os eventos antes do redirect
+      // dá ~400ms pros eventos irem antes do redirect
       setTimeout(function(){ window.location.replace(wa); }, 400);
     }
 
