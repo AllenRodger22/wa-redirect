@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Redirecionando para o WhatsApp…</title>
+
+  <!-- Meta Pixel -->
+  <script>
+    !(function(f,b,e,v,n,t,s){
+      if(f.fbq) return; n=f.fbq=function(){n.callMethod?
+      n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+      if(!f._fbq) f._fbq=n; n.push=n; n.loaded=!0; n.version='2.0';
+      n.queue=[]; t=b.createElement(e); t.async=!0;
+      t.src=v; s=b.getElementsByTagName(e)[0];
+      s.parentNode.insertBefore(t,s);
+    })(window, document, 'script', 'https://connect.facebook.net/en_US/fbevents.js');
+
+    // Pixel do Meta (fornecido pelo usuário)
+    fbq('init', '2061449251273524');
+    fbq('track', 'PageView'); // opcional, mas útil
+  </script>
+  <noscript>
+    <img height="1" width="1" style="display:none"
+      src="https://www.facebook.com/tr?id=2061449251273524&ev=PageView&noscript=1"/>
+  </noscript>
+
+  <style>
+    body {font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+          display:flex; align-items:center; justify-content:center;
+          min-height:100vh; margin:0; padding:24px; text-align:center;}
+    .card {max-width: 560px;}
+    h1 {font-size: 1.25rem; margin: 0 0 8px;}
+    p {opacity: .8; margin: 0;}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Levando você para o WhatsApp…</h1>
+    <p>Se não redirecionar em instantes, <a id="fallback" href="#">clique aqui</a>.</p>
+  </div>
+
+  <script>
+    // Link oficial informado pelo usuário
+    const wa = "https://wa.me/5585985499095?text=Ol%C3%A1%21+Tenho+interesse+na+gest%C3%A3o+de+tr%C3%A1fego+da+A3+Ads%26Lab+e+queria+mais+informa%C3%A7%C3%B5es+sobre+planos+e+valores.";
+    // UTMs (opcional; pode remover se não quiser usar GA4)
+    const utm = "&utm_source=instagram&utm_medium=bio&utm_campaign=wa_click";
+    const redirectTo = wa + utm;
+
+    // Envia evento personalizado "Contato" no Pixel
+    fbq('trackCustom', 'Contato', {
+      destination: 'whatsapp',
+      source: 'instagram_bio'
+    });
+
+    // Pequeno atraso para garantir o disparo do Pixel antes do redirect
+    const go = () => window.location.replace(redirectTo);
+    setTimeout(go, 300);
+
+    // Fallback clicável
+    document.getElementById('fallback').setAttribute('href', redirectTo);
+  </script>
+
+  <noscript>
+    <meta http-equiv="refresh" content="0; url=https://wa.me/5585985499095" />
+    <p>JavaScript está desativado. <a href="https://wa.me/5585985499095">Abrir no WhatsApp</a>.</p>
+  </noscript>
+</body>
+</html>
