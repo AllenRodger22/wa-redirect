@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Contato | A3 Ads&Lab</title>
+  <meta name="robots" content="noindex,nofollow" />
+
+  <!-- Meta Pixel -->
+  <script>
+  !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+  n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+  n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+  t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}
+  (window, document,'script','https://connect.facebook.net/pt_BR/fbevents.js');
+  fbq('init', '2061449251273524');
+  fbq('track', 'PageView');
+  </script>
+  <noscript>
+    <img height="1" width="1" style="display:none"
+      src="https://www.facebook.com/tr?id=2061449251273524&ev=PageView&noscript=1"/>
+  </noscript>
+  <!-- /Meta Pixel -->
+
+  <!-- Fallback sem JS -->
+  <noscript>
+    <meta http-equiv="refresh" content="0;url=https://wa.me/5585985499095?text=Ol%C3%A1%21%20Tenho%20interesse%20na%20gest%C3%A3o%20de%20tr%C3%A1fego%20da%20A3%20Ads%26Lab%20e%20queria%20mais%20informa%C3%A7%C3%B5es%20sobre%20planos%20e%20valores." />
+  </noscript>
+
+  <style>
+    html,body{height:100%;margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial}
+    .wrap{display:flex;align-items:center;justify-content:center;height:100%;text-align:center;padding:24px}
+    .card{max-width:560px}
+    .link{display:inline-block;margin-top:12px;text-decoration:underline}
+    .muted{opacity:.7;font-size:.9rem}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <h1>Enviando você para o WhatsApp…</h1>
+      <p class="muted">Se não redirecionar em alguns instantes, toque no botão abaixo.</p>
+      <p><a id="wa-link" class="link" href="#">Abrir conversa no WhatsApp</a></p>
+    </div>
+  </div>
+
+  <script>
+    // Monta o link do WhatsApp
+    const msg = 'Olá! Tenho interesse na gestão de tráfego da A3 Ads&Lab e queria mais informações sobre planos e valores.';
+    const wa = 'https://wa.me/5585985499095?text=' + encodeURIComponent(msg);
+
+    // Atualiza o link de fallback
+    const $a = document.getElementById('wa-link');
+    $a.href = wa;
+
+    // Se estiver testando no Events Manager, permita ?test_event_code=XXXX
+    const params = new URLSearchParams(location.search);
+    const testCode = params.get('test_event_code');
+    if (testCode) {
+      // Meta detecta automaticamente a presença do parâmetro na URL ao disparar eventos
+      // Basta manter o parâmetro na URL durante os fbq('track').
+    }
+
+    function trackAndGo(){
+      try {
+        if (typeof fbq === 'function') {
+          fbq('track', 'Contact');            // evento padrão recomendado p/ contato
+          fbq('trackCustom', 'ClickWhatsApp'); // evento custom p/ relatórios
+        }
+      } catch(_) {}
+
+      // Dá ~400ms p/ enviar os eventos antes do redirect
+      setTimeout(function(){ window.location.replace(wa); }, 400);
+    }
+
+    if (document.readyState === 'complete' || document.readyState === 'interactive') {
+      trackAndGo();
+    } else {
+      window.addEventListener('DOMContentLoaded', trackAndGo);
+    }
+
+    // Clique manual também conta
+    $a.addEventListener('click', function(){
+      try {
+        if (typeof fbq === 'function') {
+          fbq('track', 'Contact');
+          fbq('trackCustom', 'ClickWhatsApp');
+        }
+      } catch(_) {}
+    });
+  </script>
+</body>
+</html>
