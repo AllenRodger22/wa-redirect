@@ -1,9 +1,10 @@
 {
-  "redirects": [
+  "headers": [
     {
       "source": "/(.*)",
-      "destination": "https://wa.me/5585985499095?text=Ol%C3%A1%21+Tenho+interesse+na+gest%C3%A3o+de+tr%C3%A1fego+da+A3+Ads%26Lab+e+queria+mais+informa%C3%A7%C3%B5es+sobre+planos+e+valores.",
-      "permanent": false
+      "headers": [
+        { "key": "Cache-Control", "value": "no-store, max-age=0" }
+      ]
     }
   ]
 }

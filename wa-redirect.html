@@ -6,86 +6,103 @@
   <title>Contato | A3 Ads&Lab</title>
   <meta name="robots" content="noindex,nofollow" />
 
-  <!-- Meta Pixel Code -->
+  <!-- Meta Pixel (status 200, sem redirect imediato) -->
   <script>
-  !function(f,b,e,v,n,t,s)
-  {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-  n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-  if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-  n.queue=[];t=b.createElement(e);t.async=!0;
-  t.src=v;s=b.getElementsByTagName(e)[0];
-  s.parentNode.insertBefore(t,s)}(window, document,'script',
-  'https://connect.facebook.net/en_US/fbevents.js');
-  fbq('init', '2061449251273524');
-  fbq('track', 'PageView');
+    // carrega o fbevents com evento de onload para garantir que baixou
+    (function loadPixel(){
+      if (window.fbq) return;
+      !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+      n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+      n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];
+      t=b.createElement(e);t.async=!0;t.src=v;
+      // marcamos quando o script realmente carregou
+      t.addEventListener('load', function(){ window.__pixelLoaded = true; });
+      s=b.getElementsByTagName(e)[0]; s.parentNode.insertBefore(t,s);
+      }(window, document, 'script', 'https://connect.facebook.net/en_US/fbevents.js');
+    })();
   </script>
+  <script>
+    // configurações
+    const PIXEL_ID = '2061449251273524';
+    const WA_MESSAGE = 'Olá! Tenho interesse na gestão de tráfego da A3 Ads&Lab e queria mais informações sobre planos e valores.';
+    const WA_LINK = 'https://wa.me/5585985499095?text=' + encodeURIComponent(WA_MESSAGE);
+
+    // dispara pageview assim que fbq existir
+    function trackPageView() {
+      try { fbq('init', PIXEL_ID); fbq('track', 'PageView'); } catch(e){}
+    }
+
+    // dispara contato + custom
+    function trackContact() {
+      try {
+        fbq('track', 'Contact');
+        fbq('trackCustom', 'ClickWhatsApp');
+      } catch(e){}
+    }
+
+    // lógica de “aguarda e redireciona”
+    function startFlow() {
+      const a = document.getElementById('wa-link');
+      a.href = WA_LINK;
+
+      // garante que o script do pixel realmente chegou
+      const start = performance.now();
+      const MAX_WAIT_MS = 1200; // ~1.2s de janela para envio do evento
+
+      (function waitForPixel(){
+        const ready = typeof fbq === 'function' && window.__pixelLoaded === true;
+        const elapsed = performance.now() - start;
+
+        if (ready) {
+          trackPageView();
+          trackContact();
+          setTimeout(() => window.location.replace(WA_LINK), 350); // tempo de flush
+        } else if (elapsed < MAX_WAIT_MS) {
+          requestAnimationFrame(waitForPixel);
+        } else {
+          // fallback: sem pixel, segue pro link após 1.2s
+          window.location.replace(WA_LINK);
+        }
+      })();
+    }
+
+    // inicia quando o DOM estiver pronto
+    if (document.readyState === 'complete' || document.readyState === 'interactive') {
+      startFlow();
+    } else {
+      document.addEventListener('DOMContentLoaded', startFlow);
+    }
+  </script>
+
+  <!-- NoScript: apenas imagem (continua 200, sem redirect automático) -->
   <noscript>
     <img height="1" width="1" style="display:none"
          src="https://www.facebook.com/tr?id=2061449251273524&ev=PageView&noscript=1"/>
-  </noscript>
-  <!-- End Meta Pixel Code -->
-
-  <!-- Fallback de redirecionamento para quem está sem JS -->
-  <noscript>
-    <meta http-equiv="refresh" content="0;url=https://wa.me/5585985499095?text=Ol%C3%A1%21%20Tenho%20interesse%20na%20gest%C3%A3o%20de%20tr%C3%A1fego%20da%20A3%20Ads%26Lab%20e%20queria%20mais%20informa%C3%A7%C3%B5es%20sobre%20planos%20e%20valores." />
   </noscript>
 
   <style>
     html,body{height:100%;margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial}
     .wrap{display:flex;align-items:center;justify-content:center;height:100%;text-align:center;padding:24px}
     .card{max-width:560px}
-    .link{display:inline-block;margin-top:12px;text-decoration:underline}
-    .muted{opacity:.7;font-size:.9rem}
+    .muted{opacity:.7;font-size:.95rem}
+    .btn{display:inline-block;margin-top:14px;padding:10px 16px;border-radius:12px;
+         text-decoration:none;border:1px solid #e5e5e5}
   </style>
 </head>
 <body>
   <div class="wrap">
     <div class="card">
-      <h1>Enviando você para o WhatsApp…</h1>
-      <p class="muted">Se não redirecionar em alguns instantes, toque no botão abaixo.</p>
-      <p><a id="wa-link" class="link" href="#">Abrir conversa no WhatsApp</a></p>
+      <h1>Preparando seu contato no WhatsApp…</h1>
+      <p class="muted">Aguarde um instante para registrarmos o evento de contato. Se não avançar, toque no botão:</p>
+      <a id="wa-link" class="btn" href="#" rel="nofollow">Abrir no WhatsApp</a>
+      <p class="muted">Dica: deixe esta aba aberta enquanto o WhatsApp inicia.</p>
     </div>
   </div>
 
+  <!-- clique manual também conta -->
   <script>
-    // Monte o link do WhatsApp com a mensagem pré-preenchida
-    const message = 'Olá! Tenho interesse na gestão de tráfego da A3 Ads&Lab e queria mais informações sobre planos e valores.';
-    const waLink = 'https://wa.me/5585985499095?text=' + encodeURIComponent(message);
-
-    // Atualiza o href do link de fallback
-    const a = document.getElementById('wa-link');
-    a.href = waLink;
-
-    // Dispara eventos do Pixel antes do redirecionamento
-    function trackAndGo(){
-      try {
-        // Evento padrão (recomendado pelo Meta para contato)
-        if (typeof fbq === 'function') {
-          fbq('track', 'Contact');
-          // Evento personalizado opcional (útil para relatórios)
-          fbq('trackCustom', 'ClickWhatsApp');
-        }
-      } catch(e){/* ignora erros de tracking */ }
-
-      // Aguarda ~350ms para garantir o envio do evento e redireciona
-      setTimeout(function(){ window.location.replace(waLink); }, 350);
-    }
-
-    // Redireciona automaticamente quando a página estiver pronta
-    if (document.readyState === 'complete' || document.readyState === 'interactive') {
-      trackAndGo();
-    } else {
-      window.addEventListener('DOMContentLoaded', trackAndGo);
-    }
-
-    // Se o usuário clicar manualmente no link, também rastreia
-    a.addEventListener('click', function(){
-      try {
-        if (typeof fbq === 'function') {
-          fbq('track', 'Contact');
-          fbq('trackCustom', 'ClickWhatsApp');
-        }
-      } catch(e){}
+    document.getElementById('wa-link').addEventListener('click', function(){
+      trackContact();
     });
   </script>
 </body>
