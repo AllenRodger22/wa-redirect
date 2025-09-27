@@ -6,82 +6,85 @@
   <title>Contato | A3 Ads&Lab</title>
   <meta name="robots" content="noindex,nofollow" />
 
-  <!-- Meta Pixel -->
+  <!-- Meta Pixel (apenas PageView) -->
   <script>
-  !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-  n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
-  n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
-  t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}
-  (window, document,'script','https://connect.facebook.net/pt_BR/fbevents.js');
-  fbq('init', '2061449251273524');
-  fbq('track', 'PageView');
+    (function(){
+      if (window.fbq) return;
+      !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+      n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+      if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];
+      t=b.createElement(e);t.async=!0;t.src=v;
+      t.addEventListener('load', function(){ window.__pixelLoaded = true; });
+      s=b.getElementsByTagName(e)[0]; s.parentNode.insertBefore(t,s);
+      }(window, document,'script','https://connect.facebook.net/pt_BR/fbevents.js');
+    })();
+
+    const PIXEL_ID = '2061449251273524';
+    const WA_MSG   = 'Olá! Tenho interesse na gestão de tráfego da A3 Ads&Lab e queria mais informações sobre planos e valores.';
+    const WA_URL   = 'https://wa.me/5585985499095?text=' + encodeURIComponent(WA_MSG);
+
+    // Envia somente PageView
+    function sendPageView(){
+      try { fbq('init', PIXEL_ID); fbq('track', 'PageView'); } catch(e){}
+    }
+
+    // Aguarda o fbevents carregar (200 OK), envia PageView e redireciona
+    function go(){
+      const start = performance.now();
+      const MAX_WAIT = 1500; // máx p/ garantir carregamento
+      const FLUSH    = 350;  // pequena janela p/ envio
+
+      (function wait(){
+        const ready = typeof fbq === 'function' && window.__pixelLoaded === true;
+        const elapsed = performance.now() - start;
+
+        if (ready) {
+          sendPageView();
+          setTimeout(()=>{ window.location.replace(WA_URL); }, FLUSH);
+        } else if (elapsed < MAX_WAIT) {
+          requestAnimationFrame(wait);
+        } else {
+          // fallback: tenta mesmo assim e segue
+          sendPageView();
+          setTimeout(()=>{ window.location.replace(WA_URL); }, 100);
+        }
+      })();
+    }
+
+    if (document.readyState === 'complete' || document.readyState === 'interactive') {
+      go();
+    } else {
+      document.addEventListener('DOMContentLoaded', go);
+    }
   </script>
+
   <noscript>
     <img height="1" width="1" style="display:none"
-      src="https://www.facebook.com/tr?id=2061449251273524&ev=PageView&noscript=1"/>
-  </noscript>
-  <!-- /Meta Pixel -->
-
-  <!-- Fallback sem JS -->
-  <noscript>
-    <meta http-equiv="refresh" content="0;url=https://wa.me/5585985499095?text=Ol%C3%A1%21%20Tenho%20interesse%20na%20gest%C3%A3o%20de%20tr%C3%A1fego%20da%20A3%20Ads%26Lab%20e%20queria%20mais%20informa%C3%A7%C3%B5es%20sobre%20planos%20e%20valores." />
+         src="https://www.facebook.com/tr?id=2061449251273524&ev=PageView&noscript=1"/>
   </noscript>
 
   <style>
     html,body{height:100%;margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial}
     .wrap{display:flex;align-items:center;justify-content:center;height:100%;text-align:center;padding:24px}
-    .card{max-width:560px}
-    .link{display:inline-block;margin-top:12px;text-decoration:underline}
-    .muted{opacity:.7;font-size:.9rem}
+    .muted{opacity:.75}
+    .btn{display:inline-block;margin-top:12px;text-decoration:underline}
   </style>
 </head>
 <body>
   <div class="wrap">
-    <div class="card">
-      <h1>Enviando você para o WhatsApp…</h1>
-      <p class="muted">Se não redirecionar em alguns instantes, toque no botão abaixo.</p>
-      <p><a id="wa-link" class="link" href="#">Abrir conversa no WhatsApp</a></p>
+    <div>
+      <h1>Indo para o WhatsApp…</h1>
+      <p class="muted">Registrando a visualização de página e abrindo a conversa.</p>
+      <p><a id="fallback" class="btn" href="https://wa.me/5585985499095">Abrir manualmente</a></p>
     </div>
   </div>
 
   <script>
-    // Monta o link do WhatsApp
-    const msg = 'Olá! Tenho interesse na gestão de tráfego da A3 Ads&Lab e queria mais informações sobre planos e valores.';
-    const wa = 'https://wa.me/5585985499095?text=' + encodeURIComponent(msg);
-
-    // Atualiza o link de fallback
-    const $a = document.getElementById('wa-link');
-    $a.href = wa;
-
-    // Se estiver testando no Events Manager, permite ?test_event_code=XXXX na URL
-    // (o Meta detecta automaticamente nos fbq('track'))
-
-    function trackAndGo(){
-      try {
-        if (typeof fbq === 'function') {
-          fbq('track', 'Contact');            // evento padrão de contato
-          fbq('trackCustom', 'ClickWhatsApp'); // evento custom p/ relatórios
-        }
-      } catch(_) {}
-
-      // dá ~400ms pros eventos irem antes do redirect
-      setTimeout(function(){ window.location.replace(wa); }, 400);
-    }
-
-    if (document.readyState === 'complete' || document.readyState === 'interactive') {
-      trackAndGo();
-    } else {
-      window.addEventListener('DOMContentLoaded', trackAndGo);
-    }
-
-    // Clique manual também conta
-    $a.addEventListener('click', function(){
-      try {
-        if (typeof fbq === 'function') {
-          fbq('track', 'Contact');
-          fbq('trackCustom', 'ClickWhatsApp');
-        }
-      } catch(_) {}
+    // Clique manual: ainda envia só PageView antes de ir
+    document.getElementById('fallback').addEventListener('click', function(e){
+      e.preventDefault();
+      try { fbq('init', PIXEL_ID); fbq('track', 'PageView'); } catch(e){}
+      setTimeout(()=>{ window.location.href = this.href; }, 300);
     });
   </script>
 </body>
